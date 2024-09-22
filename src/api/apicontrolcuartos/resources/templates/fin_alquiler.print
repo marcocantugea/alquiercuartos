@@ -1,0 +1,37 @@
+!justification_center
+!TextSize2
+@nombreEmpresa
+!feed
+!TextSize1
+@direccionCalle @direccionNumero @direccionEstatoCiudad
+!feed
+C.P. @direccionCP, TEL @telefono
+!feed
+_______________________________________
+!justification_left
+!setMode0
+!TextSize1
+!feed
+@fecha_salida
+!feed
+TICKET DE COBRO
+!feed
+FOLIO :@folio
+!feed
+ENTRADA :@fecha_entrada
+!feed
+SALIDA :@fecha_salida
+!feed
+!justification_center
+!TextSize2
+$ @totalPago
+!feed
+!justification_left
+!TextSize1
+ESTE TICKET NO ES UN COMPROBANTE FISCAL
+!feed
+VUELVA PRONTO
+!feed
+_______________________________________
+!feed
+!cut

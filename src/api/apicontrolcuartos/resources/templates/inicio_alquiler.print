@@ -1,0 +1,39 @@
+
+!justification_center
+@nombreEmpresa
+!feed
+!setMode129
+!FontC
+@direccionCalle @direccionNumero @direccionEstatoCiudad
+!feed
+C.P. @direccionCP, TEL @telefono
+!feed
+_______________________________________
+!setMode0
+!FontA
+!justification_left
+!feed
+@fecha_entrada
+!feed
+FOLIO: @folio          @descripcion
+!feed
+!justification_center
+[codigo_barras @codigoBarras]
+!TextSize1
+!feed
+@codigoBarras - @publicId
+!feed
+!justification_left
+!FontA
+!FontB
+!setMode129
+!FontC
+Solo ofrecemos el servicio de habitacion. 
+@nombreEmpresa no se hace responsable por objetos o prendas olvidadas. 
+En cumplimiento a la Nom 07-TUR-2002 contamos con seguro
+DE RESPONSAVILIDAD CIVIL. 
+La chica es independiente al @nombreEmpresa. 
+El cuarto es para 2 pesonas, la tarifa es por @tiempo minutos.
+Excedido el tiempo se debera pagar por otros 20 minutos.
+!feed
+!cut

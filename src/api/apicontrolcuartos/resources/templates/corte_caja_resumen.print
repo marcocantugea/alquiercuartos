@@ -1,0 +1,38 @@
+!justification_center
+!TextSize2
+@nombreEmpresa
+!feed
+!TextSize1
+@direccionCalle @direccionNumero @direccionEstatoCiudad
+!feed
+C.P. @direccionCP, TEL @telefono
+!feed
+_______________________________________
+!feed
+!FontA
+!TextSize2
+Corte de Caja
+!justification_left
+!TextSize1
+!feed
+Folio: @ultimoFolio
+!feed
+Periodo :@periodoInicio
+!feed
+      a :@periodoFin
+!feed
+Tickets Cobraros :@ticketsCobrados
+!feed
+Tickets Cancelados Parciales :@ticketCanceladoParcial
+!feed
+Tickets Cancelados :@ticketCanceladoAutorizados
+!feed
+Extras: @Extras
+!feed
+Monto Total :$ @MontoTotal
+!feed
+Monto Cancelado Parcial :$ @MontoCanceladoParcial
+!feed
+Monto Cancelado :$ @MontoCancelado
+!feed
+!cut

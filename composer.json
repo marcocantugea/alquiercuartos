@@ -1,0 +1,16 @@
+{
+    "name": "marcocantu/controlcuartos",
+    "description": "control de cuartos de alquiler",
+    "autoload": {
+        "psr-4": {
+            "Marcocantu\\Controlcuartos\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Marco A. Cantu Gea",
+            "email": "marco.cantu.g@gmail.com"
+        }
+    ],
+    "require": {}
+}

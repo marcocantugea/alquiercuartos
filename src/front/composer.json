@@ -1,0 +1,12 @@
+{
+    "name": "marcocantu/frontcontrolcuartos",
+    "description": "front de control de cuartos",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Marco A. Cantu Gea",
+            "email": "marco.cantu.g@gmail.com"
+        }
+    ],
+    "require": {}
+}
