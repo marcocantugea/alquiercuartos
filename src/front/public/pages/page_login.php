@@ -10,14 +10,9 @@
                 <div class="img" style="background-image: url(./images/gb-1.jpg);"></div>
                 <div class="login-wrap p-4 p-md-5">
                     <div class="d-flex">
-                        <div class="w-100">
-                            <h3 class="mb-4">Iniciar Session</h3>
-                        </div>
-                        <div class="w-100">
-                            <p class="social-media d-flex justify-content-end">
-                                <!-- <a href="#" class="social-icon d-flex align-items-center justify-content-center"><span class="fa fa-facebook"></span></a>
-                                <a href="#" class="social-icon d-flex align-items-center justify-content-center"><span class="fa fa-twitter"></span></a> -->
-                            </p>
+                        <div class="w-100 text-center mb-4" style="width: 100%;">
+                            <h3 class="">Iniciar Session</h3>
+                            <span style="font-size: x-small;">version:<span id="versionlbl"></span> </span>                           
                         </div>
                     </div>
                     <form id="formlogin" action="#" class="signin-form">
@@ -25,13 +20,17 @@
                             <input id="user" type="text" class="form-control" required="">
                             <label class="form-control-placeholder" for="username">Usuario</label>
                         </div>
+                        <br>
                         <div class="form-group">
                             <input id="password" type="password" class="form-control" required="">
                             <label class="form-control-placeholder" for="password">Contraseña</label>
                             <!-- <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span> -->
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="form-control btn btn-primary rounded submit px-3">Iniciar</button>
+                            <button type="submit" class="form-control btn btn-primary rounded submit px-3" id="loginbtn">Iniciar</button>
+                        </div>
+                        <div class="text-center esconderContent" id="loading">
+                            <img src="./images/Fountain.gif">
                         </div>
                         <!-- <div class="form-group d-md-flex">
                             <div class="w-50 text-left">
@@ -61,4 +60,7 @@
         e.preventDefault();
         await login();
     });
+    $(document).ready(async function() {
+        LoadData();
+    })
 </script>

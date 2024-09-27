@@ -1,6 +1,8 @@
 let _cuartos=null;
 let _cuartosAlquilados=null;
 let _timers=[];
+let _systemConfig=null;
+let UserRol="{\"role\":\"Cja\"}";
 let actionOpenAlquiler=setTimeout(() => {
 }, 800);
 let actionClosealquiler=setTimeout(() => {
@@ -282,12 +284,17 @@ async function getCorteCaja(fechaInicio,fechaFin){
 
 async function loadData(){
     $('#loadingmodal').modal('show');
+    let sistemaConfig=await getConfigurationesSistema();
+    sessionStorage.setItem('config',JSON.stringify(sistemaConfig));
+    _systemConfig=sistemaConfig;
+    UserRol= (sessionStorage.getItem('role')) ?  JSON.parse(sessionStorage.getItem('role')) : UserRol;
     try {
         setTimeout(async ()=>{
             let cuartos=await getCuartos();
             _cuartos=cuartos;
             let cuartosAlquilados=await getCuartosAlquilados();
             renderCuartos(cuartos,cuartosAlquilados);
+            console.log(_systemConfig);
             $('#loadingmodal').modal('hide');
             $('#searchFolio').focus();
         },800);
@@ -629,7 +636,12 @@ function renderCuartoAlquilado(codigo,nombreCuarto,id,fechaEntrada,descripcion,i
     cuarto+="<tr><td class=\"text-right\"><strong><span id=\""+id+"_timer\">00:00:00</span></strong></td></tr>";
     // cuarto+="<tr><td><br></td></tr>";
     //cuarto+="<tr><td class=\"text-left\">Minutos : <strong><span>0</span> Min.</strong></td></tr>";
-    cuarto+="<tr><td class=\"text-center\"><a href=\"#\" class=\"btn btn-danger mt-2\" style=\"width: 65%;\" onclick=\"confirmaFinAlquiler('"+id+"','"+idAlquiler+"')\">Finalizar</a></td></tr>";
+    let functBtnFinalizarConfig=_systemConfig.filter((element)=> element.publicId=="6110f89c");
+
+    if( (functBtnFinalizarConfig && functBtnFinalizarConfig[0].valor=="1") || UserRol.role!="Caja"){
+        console.log("valor>"+functBtnFinalizarConfig.valor);
+        cuarto+="<tr><td class=\"text-center\"><a href=\"#\" class=\"btn btn-danger mt-2\" style=\"width: 65%;\" onclick=\"confirmaFinAlquiler('"+id+"','"+idAlquiler+"')\">Finalizar</a></td></tr>";
+    } 
     cuarto+="</table></div></div></div>";
 
     return cuarto;
@@ -653,7 +665,13 @@ function renderNewAlquiler(alquilerInfo){
     cuarto+="<tr><td class=\"text-right\"><strong><span id=\""+cuartoSelected[0].publicId+"_timer\">00:00:00</span></strong></td></tr>";
     // cuarto+="<tr><td><br></td></tr>";
     //cuarto+="<tr><td class=\"text-left\">Minutos : <strong><span>0</span> Min.</strong></td></tr>";
-    cuarto+="<tr><td class=\"text-center\"><a href=\"#\" class=\"btn btn-danger mt-2\" style=\"width: 65%;\" onclick=\"confirmaFinAlquiler('"+cuartoSelected[0].publicId+"','"+alquilerInfo.publicId+"')\">Finalizar</a></td></tr>";
+    let functBtnFinalizarConfig=_systemConfig.filter((element)=> element.publicId=="6110f89c");
+
+    if( (functBtnFinalizarConfig && functBtnFinalizarConfig[0].valor=="1") || UserRol.role!="Caja"){
+
+        console.log("valor>"+functBtnFinalizarConfig.valor);
+        cuarto+="<tr><td class=\"text-center\"><a href=\"#\" class=\"btn btn-danger mt-2\" style=\"width: 65%;\" onclick=\"confirmaFinAlquiler('"+cuartoSelected[0].publicId+"','"+alquilerInfo.publicId+"')\">Finalizar</a></td></tr>";
+    }
     cuarto+="</table></div></div>";
 
     return cuarto;
@@ -813,14 +831,28 @@ function addZeros(valor){
     return (parseInt(valor)<10) ? "0"+valor : valor;
 }
 
+
+let startTimeScannerChecker=undefined;
+
 function handle(e){
+    if(!startTimeScannerChecker) startTimeScannerChecker=performance.now();
+
     if(e.keyCode === 13){
+        let duration = performance.now() - startTimeScannerChecker;
+
+        if(duration>300 && UserRol.role=='Caja'){
+            alert('Ticket no escaneado.. por favor de escanear el ticket. ');
+            startTimeScannerChecker=undefined;
+            return;
+        }
+
         e.preventDefault(); // Ensure it is only this code that runs
 
         let valor=$('#searchFolio').val();
         valor= valor.replace('*','');
 
         BuscaInfoPorFolio(valor);
+        startTimeScannerChecker=undefined;
     }
 }
 

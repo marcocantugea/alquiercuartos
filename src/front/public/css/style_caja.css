@@ -5,3 +5,7 @@
 .caja-warning{
     background-color:#F5FF04;
 }
+
+.esconderContent{
+    display: none;
+}

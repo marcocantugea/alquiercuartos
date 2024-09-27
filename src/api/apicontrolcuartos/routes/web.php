@@ -18,6 +18,7 @@ $router->get('/', function () use ($router) {
 });
 
 $router->post('api/v1/auth', 'AuthenticateController@authenticateUser');
+$router->get('api/v1/version','VersionController@GetVersion');
 
 $router->group(['middleware' => 'auth'], function () use ($router) {
     //rutas cuartos

@@ -263,6 +263,7 @@
 </div>
 
 <script src="./js/config.js"></script>
+<script src="./js/system_config.js"></script>
 <script src="./js/caja.js"></script>
 <script>
     $(document).ready(async function() {
