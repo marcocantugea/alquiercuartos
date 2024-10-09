@@ -44,6 +44,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     //rutas alquiler
     $router->post('api/v1/alquiler', 'AlquilerController@startAlquiler');
     $router->get('api/v1/alquiler', 'AlquilerController@getAlquileresActivos');
+    $router->get('api/v1/alquiler/search/folio', 'AlquilerController@searchAlquilerByTokenFolio');
     $router->post('api/v1/alquiler/finalizar/{publicId}', 'AlquilerController@stopAlquiler');
     $router->post('api/v1/alquiler/pre/finalizar/{publicId}', 'AlquilerController@previewAlquiler');
     $router->post('api/v1/alquiler/{alquilerId}/cancelacion/parcial', 'CancelacionesController@addCancelacionParcial');

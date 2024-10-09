@@ -230,6 +230,28 @@ async function getAlquilerPorFolio(folio){
     }
 }
 
+async function searchAlquilerFolioWithToken(folio){
+    try {
+        var response= await fetch(apiHost+apiPath+"alquiler/search/folio?folio="+folio,{
+            method:'get',
+            headers:headersRequest
+        });
+
+        if(response.ok){
+            const content= await response.json();
+            return content;
+        }else{
+            //todo: error display
+            console.log(response);
+            return;
+        }
+
+    } catch (error) {
+        //todo: error display
+        console.log(error);
+    }
+}
+
 async function cancelAlquilerParcial(alquilerId,motivo){
 
     let request= {
@@ -463,7 +485,7 @@ async function CobrarAlquiler(){
 
 async function BuscaInfoPorFolio(folio){
     
-    const response= await getAlquilerPorFolio(folio);
+    const response= await searchAlquilerFolioWithToken(folio);
     if(!response){
         ShowErrorModal('Error al buscar folio','Error al buscar el folio Error:8015');
         setTimeout(() => {
@@ -834,6 +856,9 @@ function addZeros(valor){
 
 let startTimeScannerChecker=undefined;
 
+let processsearch=setTimeout(() => { 
+}, 800);
+
 function handle(e){
     if(!startTimeScannerChecker) startTimeScannerChecker=performance.now();
 
@@ -851,7 +876,14 @@ function handle(e){
         let valor=$('#searchFolio').val();
         valor= valor.replace('*','');
 
-        BuscaInfoPorFolio(valor);
+         //eliminar primer caracter de ticket
+         let ticketFolioTrimmed=valor.substring(1);
+
+        clearInterval(processsearch);
+        processsearch=setTimeout(() => {
+            BuscaInfoPorFolio(ticketFolioTrimmed);
+        }, 800);
+       
         startTimeScannerChecker=undefined;
     }
 }

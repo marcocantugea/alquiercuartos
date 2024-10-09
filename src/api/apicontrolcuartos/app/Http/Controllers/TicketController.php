@@ -65,6 +65,12 @@ final class TicketController extends Controller
         ->where('cuartosalquiler.publicId',$alquierId)
         ->first();
         
+        $letterTicket=chr(rand(65,90)); 
+        //datetime linux epoch
+        $token=str_pad((new \DateTimeImmutable($alquiler->fecha_entrada))->format('s'),2,STR_PAD_LEFT).str_pad((new \DateTimeImmutable($alquiler->fecha_entrada))->format('i'),2,STR_PAD_LEFT);
+        //str_pad(idate('d',strtotime($alquiler->fecha_entrada)),2,"0",STR_PAD_LEFT).str_pad(idate('H',strtotime($alquiler->fecha_entrada)),2,"0",STR_PAD_LEFT).str_pad(idate('i', strtotime($alquiler->fecha_entrada)),2,"0",STR_PAD_LEFT)
+
+
         $infoTicket=[
             'nombreEmpresa'=>$datosEmpresa['nombreEmpresa'],
             'direccionCalle'=>$datosEmpresa['direccionCalle'],
@@ -77,7 +83,7 @@ final class TicketController extends Controller
             'publicId'=>strtoupper($alquiler->publicId),
             'folio'=>$alquiler->folio,
             'tiempo'=>$minutosRenta,
-            'codigoBarras'=>$alquiler->folio
+            'codigoBarras'=>$letterTicket.$token.$alquiler->folio
         ];
 
         $this->setupLayout($template->valor,$infoTicket);

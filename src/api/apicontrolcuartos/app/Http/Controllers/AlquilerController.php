@@ -295,4 +295,72 @@ final class AlquilerController extends Controller
         return $horas." hrs ".number_format($minutosSel,0)." min";
 
     }
+
+    public function searchAlquilerByTokenFolio(Request $request){
+        $folio=$request->query('folio');
+        if(strlen($folio)<=4) return new Response('invalid folio',400);
+
+        $seconds=substr($folio,0,2);
+        $minutes=substr($folio,2,2);
+        $folioTicket=substr($folio,4);
+
+        $items= DB::table('cuartosalquiler')
+        ->join('cuartos','cuartos.id','=','cuartosalquiler.cuartoId')
+        ->join('cuartoestatus','cuartoestatus.id','=','cuartos.estatusId')
+        ->select('cuartosalquiler.publicId',
+                    'cuartosalquiler.descripcion_alquiler',
+                    'cuartosalquiler.fecha_entrada',
+                    'cuartosalquiler.created_at',
+                    'cuartosalquiler.folio',
+                    'cuartos.publicId as cuartoId',
+                    'cuartos.codigo',
+                    'cuartos.descripcion as cuartoDescripcion',
+                    'cuartoestatus.estatus',
+                    )
+        ->whereNull('fecha_salida')
+        ->whereNull('cuartosalquiler.fecha_eliminado')
+        ->where('cuartosalquiler.folio',$folioTicket)
+        ->whereRaw('MINUTE(cuartosalquiler.fecha_entrada)='.$minutes)
+        ->whereRaw('SECOND(cuartosalquiler.fecha_entrada)='.$seconds)
+        ;
+
+        $items= $items->get();
+
+        $dtos=[];
+
+        foreach ($items as $item) {
+
+            //calculamos los minutos y segundos transcurridos
+            $fechaInicial=new DateTime($item->fecha_entrada);
+            $now= new DateTime('now',new DateTimeZone('America/Mazatlan'));
+
+            $difference = date_diff($now,$fechaInicial); 
+            $daysdiff = $difference->days * 24 * 60;
+            $horas = $difference->h -6;
+            $minutos = $difference->i;
+            $segundos= $difference->s;
+
+            $minutosTrans= floor(abs($fechaInicial->getTimestamp() - $now->getTimestamp()) / 60);
+
+            $dtos[]=[
+                'publicId'=>$item->publicId,
+                'folio'=>$item->folio,
+                'descripcion'=>$item->descripcion_alquiler,
+                'fecha_entrada'=>$item->fecha_entrada,
+                'created_at'=>$item->created_at,
+                'cuarto'=>[
+                    'publicId'=>$item->cuartoId,
+                    'codigo' => $item->codigo,
+                    'descripcion'=>$item->cuartoDescripcion,
+                    'estatus'=>$item->estatus
+                ],
+                'fecha_salida'=>$now->format('Y-m-d h:i:s'),
+                'horasTrans'=>$horas,
+                'minutosTrans'=>$minutos,
+                'segundosTrans'=>$segundos
+            ];
+        }
+       
+        return new Response($this->stdResponse(data:$dtos));
+    }
 }
