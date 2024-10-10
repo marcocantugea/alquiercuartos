@@ -298,11 +298,11 @@ final class AlquilerController extends Controller
 
     public function searchAlquilerByTokenFolio(Request $request){
         $folio=$request->query('folio');
-        if(strlen($folio)<=4) return new Response('invalid folio',400);
+        //if(strlen($folio)<=4) return new Response('invalid folio',400);
 
         $seconds=substr($folio,0,2);
         $minutes=substr($folio,2,2);
-        $folioTicket=substr($folio,4);
+        //$folioTicket=substr($folio,4);
 
         $items= DB::table('cuartosalquiler')
         ->join('cuartos','cuartos.id','=','cuartosalquiler.cuartoId')
@@ -319,16 +319,16 @@ final class AlquilerController extends Controller
                     )
         ->whereNull('fecha_salida')
         ->whereNull('cuartosalquiler.fecha_eliminado')
-        ->where('cuartosalquiler.folio',$folioTicket)
-        ->whereRaw('MINUTE(cuartosalquiler.fecha_entrada)='.$minutes)
-        ->whereRaw('SECOND(cuartosalquiler.fecha_entrada)='.$seconds)
+        ->where('cuartosalquiler.folio',$folio)
+        // ->whereRaw('MINUTE(cuartosalquiler.fecha_entrada)='.$minutes)
+        // ->whereRaw('SECOND(cuartosalquiler.fecha_entrada)='.$seconds)
         ;
 
-        $items= $items->get();
+        $item= $items->first();
 
         $dtos=[];
 
-        foreach ($items as $item) {
+        //foreach ($items as $item) {
 
             //calculamos los minutos y segundos transcurridos
             $fechaInicial=new DateTime($item->fecha_entrada);
@@ -359,7 +359,7 @@ final class AlquilerController extends Controller
                 'minutosTrans'=>$minutos,
                 'segundosTrans'=>$segundos
             ];
-        }
+        //}
        
         return new Response($this->stdResponse(data:$dtos));
     }

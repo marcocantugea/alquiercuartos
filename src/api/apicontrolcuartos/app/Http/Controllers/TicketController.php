@@ -83,7 +83,7 @@ final class TicketController extends Controller
             'publicId'=>strtoupper($alquiler->publicId),
             'folio'=>$alquiler->folio,
             'tiempo'=>$minutosRenta,
-            'codigoBarras'=>$letterTicket.$token.$alquiler->folio
+            'codigoBarras'=>$alquiler->folio
         ];
 
         $this->setupLayout($template->valor,$infoTicket);

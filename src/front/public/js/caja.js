@@ -877,11 +877,11 @@ function handle(e){
         valor= valor.replace('*','');
 
          //eliminar primer caracter de ticket
-         let ticketFolioTrimmed=valor.substring(1);
+         //let ticketFolioTrimmed=valor.substring(1);
 
         clearInterval(processsearch);
         processsearch=setTimeout(() => {
-            BuscaInfoPorFolio(ticketFolioTrimmed);
+            BuscaInfoPorFolio(valor);
         }, 800);
        
         startTimeScannerChecker=undefined;

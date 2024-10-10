@@ -81,7 +81,7 @@ final class PrinterService
 
         if(!isset($PrinterHost->valor) || !isset($printerSmbName->valor)) throw new Exception("printer host or printer smb name is nos configured");
 
-        $profile = CapabilityProfile::load("simple");
+        $profile = CapabilityProfile::load("default");
         $this->connector = new WindowsPrintConnector("smb://".$PrinterHost->valor."/".$printerSmbName->valor);
         $this->printer = new Printer($this->connector, $profile);
         
