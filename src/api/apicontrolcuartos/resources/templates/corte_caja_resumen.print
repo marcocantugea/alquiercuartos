@@ -15,24 +15,24 @@ Corte de Caja
 !justification_left
 !TextSize1
 !feed
-Folio: @ultimoFolio
+Folio: @folioInicio al @ultimoFolio 
 !feed
 Periodo :@periodoInicio
 !feed
       a :@periodoFin
 !feed
-Tickets Cobraros :@ticketsCobrados
+Tickets Sin Extra Cobraros :@TicketsSinExtras
 !feed
-Tickets Cancelados Parciales :@ticketCanceladoParcial
+Tickets` Con Extras: @Extras
 !feed
-Tickets Cancelados :@ticketCanceladoAutorizados
+Total Tickets: @totalTickets
 !feed
-Extras: @Extras
+Monto Sin Extras : @MontoSinExtras
+!feed
+Monto Extras : @MontoExtras
 !feed
 Monto Total :$ @MontoTotal
 !feed
-Monto Cancelado Parcial :$ @MontoCanceladoParcial
-!feed
-Monto Cancelado :$ @MontoCancelado
+_______________________________________
 !feed
 !cut

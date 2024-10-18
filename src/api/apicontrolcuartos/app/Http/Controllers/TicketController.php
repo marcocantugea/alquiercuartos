@@ -285,6 +285,20 @@ final class TicketController extends Controller
 
         $fechaTicket=new DateTime();
 
+        $TicketsSinExtras=$alquileres->where('total_pagado','<=',$precioAlquiler->valor)->whereNull('cancelacionId')->count();
+
+        $totalPagadoSinExtras=$alquileres->where('total_pagado','=<',$precioAlquiler->valor)->reduce(function($carry,$item){
+            if(!empty($item->cancelacionId)) return $carry;
+            $carry+=floatval($item->total_pagado);
+            return $carry;
+        });
+        
+        $totalPagadoExtras=$alquileres->where('total_pagado','>',$precioAlquiler->valor)->reduce(function($carry,$item){
+            if(!empty($item->cancelacionId)) return $carry;
+            $carry+=floatval($item->total_pagado);
+            return $carry;
+        });
+
         $obj=[
             'nombreEmpresa'=>$datosEmpresa['nombreEmpresa'],
             'direccionCalle'=>$datosEmpresa['direccionCalle'],
@@ -300,7 +314,7 @@ final class TicketController extends Controller
             'ticketCanceladoAutorizados'=>intval($alquileres->where('cancelacionAprobada',1)->count()),
             'Extras'=>intval($alquileres->where('total_pagado','>',$precioAlquiler->valor)->whereNull('cancelacionId')->count()),
             'MontoTotal'=>(empty($totalPagado)) ? 0 : number_format($totalPagado,2),
-            'MontoCanceladoParcial'=>(empty($totalCanceladoParcial)) ? 0 : number_format($totalCanceladoParcial,2),
+            'MontoCanceladoParcial'=>(empty($totalCanceladoParcial)) ? 0 : number_format($totalCanceladoParcial,0),
             'MontoCancelado'=>(empty($totalCancelado))? 0 : number_format($totalCancelado,2),
             'fechaTicket'=>$fechaTicket->format('d/M/Y H:i:s'),
             'fechaInicioSel'=>$fechaInicio->format('d/M/Y H:i:s'),
@@ -308,6 +322,9 @@ final class TicketController extends Controller
             'folioInicio'=>$firstFolio,
             'folioFin'=>$lastFolio,
             'totalTickets'=>($alquileres->count()>0) ? $alquileres->count() : 0,
+            'TicketsSinExtras'=>(empty($TicketsSinExtras)) ? 0 : number_format($TicketsSinExtras,0),
+            'MontoSinExtras'=>(empty($totalPagadoSinExtras)) ? 0 : number_format($totalPagadoSinExtras,2),
+            'MontoExtras'=>(empty($totalPagadoExtras)) ? 0 : number_format($totalPagadoExtras,2),
             'data'=>$alquileres
         ];
 

@@ -96,6 +96,18 @@ final class CortesController extends Controller
             $detalleRecords=$alquileres;
         }
 
+        $totalPagadoSinExtras=$alquileres->where('total_pagado','>',$precioAlquiler->valor)->reduce(function($carry,$item){
+            if(!empty($item->cancelacionId)) return $carry;
+            $carry+=floatval($item->total_pagado);
+            return $carry;
+        });
+        
+        $totalPagadoExtras=$alquileres->where('total_pagado','>',$precioAlquiler->valor)->reduce(function($carry,$item){
+            if(!empty($item->cancelacionId)) return $carry;
+            $carry+=floatval($item->total_pagado);
+            return $carry;
+        });
+
         $obj=[
             'ultimoFolio'=>(!isset($ultimoFolio->valor)) ? 1 : $ultimoFolio->valor,
             'periodoInicio'=>($alquileres->count()>0) ? $alquileres->first()->fecha_entrada : null,
@@ -107,6 +119,8 @@ final class CortesController extends Controller
             'MontoTotal'=>(empty($totalPagado)) ? 0 : number_format($totalPagado,2),
             'MontoCanceladoParcial'=>(empty($totalCanceladoParcial)) ? 0 : number_format($totalCanceladoParcial,2),
             'MontoCancelado'=>(empty($totalCancelado))? 0 : number_format($totalCancelado,2),
+            'MontoSinExtras'=>(empty($totalPagadoSinExtras)) ? 0 : number_format($totalPagadoSinExtras,2),
+            'MontoExtras'=>(empty($totalPagadoExtras)) ? 0 : number_format($totalPagadoExtras,2),
             'detalle'=>[
                 'length'=>count($alquileres),
                 'data'=>$detalleRecords
