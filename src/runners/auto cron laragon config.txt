@@ -1,0 +1,32 @@
+configurar en laragon el cron
+
+Right click en laragon -> tools -> Cron ->cronical.dat
+
+agregar 
+* * * * * D:\laragon\bin\php\php-8.1.10-Win32-vs16-x64\php.exe D:\laragon\www\alquiercuartomx\src\api\apicontrolcuartos\artisan schedule:run
+
+en la terminal
+ir a d:\laragon\bin\cronical
+ejecutar
+Cronical.exe --install
+
+abrir windows services y abrir el servicio de 
+
+Cronical Job Scheduler
+
+cambiar el tipo de inicio a automatico
+
+-------------------------------------------------------
+
+como saber si funciona
+
+detener el servicio Cronical Job Scheduler
+
+abrir consola (CMD)
+
+ir a d:\laragon\bin\cronical
+
+ejecutar Cronical.exe --debug --console 
+
+revisar si funciona.
+
