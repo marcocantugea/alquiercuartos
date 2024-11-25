@@ -165,7 +165,7 @@ final class TicketController extends Controller
 
     }
 
-    public function PrintCorteCajaResumen(Request $request){
+    public function PrintCorteCajaResumen(Request $request,bool $printTicket=true){
         
         if(!$this->userHasRoles(['Administrador','Supervisor'])) return new Response($this->stdResponse(false,true,'usario no tiene permisos'),401);
 
@@ -181,24 +181,30 @@ final class TicketController extends Controller
             return  new Response($this->stdResponse(false,true,"fechas invalidas"),400);
         }
         
-        $infoTicket=$this->GetCorteCajaResumen($fechaInicioObj->format('d'),$fechaInicioObj->format('m'),$fechaInicioObj->format('Y'),$fechaFechaFinObj->format('d'),$fechaFechaFinObj->format('m'),$fechaFechaFinObj->format('Y'));
-
+        try {
+            $infoTicket=$this->GetCorteCajaResumen($fechaInicioObj->format('d'),$fechaInicioObj->format('m'),$fechaInicioObj->format('Y'),$fechaFechaFinObj->format('d'),$fechaFechaFinObj->format('m'),$fechaFechaFinObj->format('Y'));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+        
         if(empty($infoTicket)) return  new Response($this->stdResponse(false,true,"no data found"),404);
 
         //seteamos el ticket
         $template=DB::table('configuraciones')->select('valor')->where('variable','TICKET_CORTECAJA_RESUMEN')->whereNull('fecha_eliminado')->first();
         if(!isset($template->valor)) return new Response($this->stdResponse(false,true,"plantilla no encotrada"),400);
 
-        $this->setupLayout($template->valor,$infoTicket);
-        try {
-            $response=$this->printerService->setLayout($this->printerLayoutService)->prepare()->print();
+        if($printTicket){
+            $this->setupLayout($template->valor,$infoTicket);
+            try {
+                $response=$this->printerService->setLayout($this->printerLayoutService)->prepare()->print();
 
-            if($response===false) return new Response($this->stdResponse(false,true,"error al imprimir el ticket",$response),500);
+                if($response===false) return new Response($this->stdResponse(false,true,"error al imprimir el ticket",$response),500);
 
-        } catch (\Throwable $th) {
-            return new Response($this->stdResponse(false,true,"error al imprimir el ticket",$th->getMessage()),500);
+            } catch (\Throwable $th) {
+                return new Response($this->stdResponse(false,true,"error al imprimir el ticket",$th->getMessage()),500);
+            }
         }
-
+        
         $sendEmail= DB::table('configuraciones')->select('valor')->where('variable','EMAIL_ENVIAR_CORTE')->whereNull('fecha_eliminado')->first();
         $mailToSend= DB::table('configuraciones')->select('valor')->where('variable','EMAIL_TO_ENVIAR_CORTE')->whereNull('fecha_eliminado')->first();
         $mailToSendName=DB::table('configuraciones')->select('valor')->where('variable','EMAIL_TO_ENVIAR_CORTE_NOMBRE')->whereNull('fecha_eliminado')->first();
@@ -260,6 +266,8 @@ final class TicketController extends Controller
         $datosEmpresa=$this->getDatosEmpresa();
 
         $alquileres=$this->CorteCajaData($fechaInicio,$fechaFin);
+
+        if($alquileres->count()<=0) throw new Exception("no items found");
 
         $firstFolio=$alquileres->sortBy('folio')->first()->folio;
         $lastFolio=$alquileres->sortBy('folio')->last()->folio;

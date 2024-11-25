@@ -23,7 +23,8 @@ class DatabaseSeeder extends Seeder
             AddBaseConfiguracion::class,
             AddPrinterConfiguration::class,
             AddEmailConfiguration::class,
-            addConfiguracionFinalizarBtn::class
+            addConfiguracionFinalizarBtn::class,
+            AddConfigAutoScheduler::class
         ]);
     }
 }

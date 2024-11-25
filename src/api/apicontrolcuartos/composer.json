@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.1",
         "guzzlehttp/guzzle": "^7.9",
+        "illuminate/console": "^10.48",
         "illuminate/mail": "^10.29",
         "laravel/lumen-framework": "^10.0",
         "mike42/escpos-php": "^4.0"

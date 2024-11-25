@@ -60,7 +60,6 @@ $app->singleton(
 */
 
 $app->configure('app');
-
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -112,6 +111,9 @@ $app->alias('mailer', Illuminate\Contracts\Mail\MailQueue::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(App\Providers\PrinterServiceProvider::class);
 //$app->register(App\Services\PrintLayoutServiceProvider::class);
+
+$app->singleton( Illuminate\Contracts\Console\Kernel::class, App\Console\Kernel::class);
+
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
