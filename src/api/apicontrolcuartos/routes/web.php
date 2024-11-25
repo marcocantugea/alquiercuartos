@@ -83,6 +83,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('api/v1/debug/printer/test/codigobarras', 'TestPrinterCodeBarsController@TestPrinterCodeBar');
     $router->get('api/v1/debug/printer/test/textsize', 'TestPrinterCodeBarsController@TestPrinterTextSize');
     $router->get('api/v1/debug/printer/test/demo', 'TestPrinterCodeBarsController@demoExample');
+    $router->post('api/v1/debug/notification/test/email','MailController@mail');
 
     //reportes
     $router->get('api/v1/reportes/mensual/montos','ReportesController@getMontosTotalesPorMes');

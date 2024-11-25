@@ -102,3 +102,39 @@ async function AccionDebugDemo() {
         closeLoading();
     }, 800);
 }
+
+
+async function debugEmail() {
+    try {
+        var response= await fetch(apiHost+apiPath+"debug/notification/test/email",{
+            method:'post',
+            headers:headersRequest
+        })
+        
+        if(response.ok){
+            return true;
+        }else{
+            return false;
+        }
+
+    } catch (error) {
+       console.log(error);
+       return false;
+    }   
+}
+
+
+async function AccionDebugEmailDemo() {
+    clearInterval(action);
+    action=setTimeout(async () => {
+        showLoading();
+        const response= await debugEmail();
+        console.log(response);
+        if(!response){
+            showErrorModal('error al imprimr prueba');
+            closeLoading();
+            return;
+        }
+        closeLoading();
+    }, 800);
+}

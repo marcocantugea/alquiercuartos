@@ -12,6 +12,10 @@
     <div class="m-3 p-3">
         <button class="btn btn-secondary" style="width: 250px;" onclick="AccionDebugDemo()">Prueba funcional de impresora</button>
     </div>
+
+    <div class="m-3 p-3">
+        <button class="btn btn-secondary" style="width: 250px;" onclick="AccionDebugEmailDemo()">Prueba funcional de email</button>
+    </div>
     
 </div>
 
