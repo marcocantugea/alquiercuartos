@@ -58,6 +58,9 @@
                     <button class="btn btn-secondary" style="width: 65%;" onclick="ConfirmaCorteCaja()">Corte Caja</button>
                     <br />
                     <br />
+                    <button class="btn btn-primary" style="width: 65%;" onclick="ShowReimprimirTicketModal()">Reimprimir Ticket</button>
+                    <br />
+                    <br />
                     <a href="#" class="btn btn-secondary " style="width: 65%;" onclick="cerrarSession()">Cerrar Session</a>
                 </div>
             </div>
@@ -258,6 +261,46 @@
             <div class="modal-body text-left">
                 <span class="" id="success_message">Error en sistema</span>
             </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade bd-example-modal-sm" id="modalReimprimirTicket" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Ticket a Reimprimir</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal('modalReimprimirTicket')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body text-center">
+                <table style="width: 100%;">
+                    <tr>
+                        <td colspan="2" class="text-left">
+                            Folio:
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="text-left">
+                            <input id="folioareimprimirtxt" type="number" class="form-cotrol p-2" style="width: 100%;" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">
+                            <a class="btn btn-danger text-light mt-3" onclick="closeModal('modalReimprimirTicket')">Cancelar</a>
+                        </td>
+
+                        <td class="text-right">
+                            <inpu type="hidden" value="" id="folioTicketReimprimir" />
+                            <a class="btn btn-success text-light" onclick="ReimprimirTicket();">Reimprimir</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
         </div>
     </div>
 </div>

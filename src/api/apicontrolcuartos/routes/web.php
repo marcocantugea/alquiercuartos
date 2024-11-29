@@ -74,6 +74,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('api/v1/ticket/alquiler/{alquierId}/incio', 'TicketController@PrintTicketInicioAlquiler');
     $router->post('api/v1/ticket/alquiler/{alquierId}/cobro', 'TicketController@PrintTicketCobro');
     $router->get('api/v1/ticket/corte/caja/fecha', 'TicketController@PrintCorteCajaResumen');
+    $router->get('api/v1/ticket/alquier/reimprimir/{folio}','TicketController@PrintTicketByFolio');
 
     //ruta cortes
     $router->get('api/v1/corte/caja/resumen/fecha', 'CortesController@GetCorteResumen');

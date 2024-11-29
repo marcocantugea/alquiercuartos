@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\PrinterService;
 use App\Services\PrintLayoutService;
 use DateTime;
+use DateTimeZone;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -41,6 +42,15 @@ final class TicketController extends Controller
         }
         
         return new Response($this->stdResponse());
+    }
+
+    public function PrintTicketByFolio($folio){
+        $alquiler=DB::table('cuartosalquiler')->select('publicId')->where('folio',$folio)->whereNull('fecha_eliminado')->whereNull('fecha_salida')->get();
+        
+        if(empty($alquiler)) return new Response($this->stdResponse(false,true,'item not found'),401);
+
+        return $this->PrintTicketInicioAlquiler($alquiler[0]->publicId);
+
     }
 
     public function PrintTicketInicioAlquiler($alquierId){
@@ -166,8 +176,12 @@ final class TicketController extends Controller
     }
 
     public function PrintCorteCajaResumen(Request $request,bool $printTicket=true){
-        
-        if(!$this->userHasRoles(['Administrador','Supervisor'])) return new Response($this->stdResponse(false,true,'usario no tiene permisos'),401);
+        date_default_timezone_set('America/Mexico_City');
+        $limiteEnvioEmails=0;
+        if(!$this->userHasRoles(['Administrador','Supervisor'])) {
+            $printTicket=false;
+            $limiteEnvioEmails=5;
+        }
 
         $fechaInicio=$request->query('fechaInicio');
         $fechaFechaFin=$request->query('fechaFin');
@@ -180,7 +194,7 @@ final class TicketController extends Controller
         } catch (\Throwable $th) {
             return  new Response($this->stdResponse(false,true,"fechas invalidas"),400);
         }
-        
+       
         try {
             $infoTicket=$this->GetCorteCajaResumen($fechaInicioObj->format('d'),$fechaInicioObj->format('m'),$fechaInicioObj->format('Y'),$fechaFechaFinObj->format('d'),$fechaFechaFinObj->format('m'),$fechaFechaFinObj->format('Y'));
         } catch (\Throwable $th) {
@@ -210,14 +224,21 @@ final class TicketController extends Controller
         $mailToSendName=DB::table('configuraciones')->select('valor')->where('variable','EMAIL_TO_ENVIAR_CORTE_NOMBRE')->whereNull('fecha_eliminado')->first();
         $mailCCSend= DB::table('configuraciones')->select('valor')->where('variable','EMAIL_CC_ENVIAR_CORTE')->whereNull('fecha_eliminado')->first();
 
+        $this->ValidateEmailEnviados();
+        $mailsEnviados=($limiteEnvioEmails>0) ?  DB::table('configuraciones')->select('valor')->where('variable','EMAIL_ENVIADOS_HOY')->whereNull('fecha_eliminado')->first() : $limiteEnvioEmails;
+        $valorEmailEnviados=($limiteEnvioEmails>0) ? intval($mailsEnviados->valor) : $limiteEnvioEmails;
+
         if(!empty($sendEmail->valor) && $sendEmail->valor=="1" ){
-            Mail::send("mail", $infoTicket, function($message) use (&$infoTicket,&$mailToSend,&$mailToSendName,&$mailCCSend) {
-                $message->to($mailToSend->valor, $mailToSendName->valor)
-                ->cc($mailCCSend->valor)
-                ->cc("info.controlalquilersys@gmail.com")
-                ->subject("Corte de Caja del Dia " . $infoTicket['fechaTicket']);
-                $message->from("info.controlalquilersys@gmail.com","SistemaControlAlquier");
-                });
+            if( $valorEmailEnviados<=$limiteEnvioEmails){
+                Mail::send("mail", $infoTicket, function($message) use (&$infoTicket,&$mailToSend,&$mailToSendName,&$mailCCSend) {
+                    $message->to($mailToSend->valor, $mailToSendName->valor)
+                    ->cc($mailCCSend->valor)
+                    ->cc("info.controlalquilersys@gmail.com")
+                    ->subject("Corte de Caja del Dia " . $infoTicket['fechaTicket']);
+                    $message->from("info.controlalquilersys@gmail.com","SistemaControlAlquier");
+                    });
+                $this->updateEmailsEnviados();
+            }
         }
 
         Log::info("TicketController|PrintCorteCajaResumen|impresion ticket corte caja|".json_encode($infoTicket));
@@ -369,4 +390,37 @@ final class TicketController extends Controller
         ->get();
 
     }
+
+    private function updateEmailsEnviados(){
+
+        $actualvalues=DB::table('configuraciones')->select(['valor','updated_at'])->where('variable','EMAIL_ENVIADOS_HOY')->whereNull('fecha_eliminado')->first();
+
+        $valor=intval($actualvalues->valor)+1;
+        $timezone=new DateTimeZone('America/Mexico_City');
+        DB::table('configuraciones')->where('variable','EMAIL_ENVIADOS_HOY')->update([
+            'valor'=>$valor,
+            'updated_at'=>new DateTime('now',$timezone)
+        ]);
+    }
+
+    private function ValidateEmailEnviados(){
+        $actualvalues = DB::table('configuraciones')->select(['valor', 'updated_at'])->where('variable', 'EMAIL_ENVIADOS_HOY')->whereNull('fecha_eliminado')->first();
+    
+        $dateUpdated = new DateTime($actualvalues->updated_at);
+        $actualDate = new DateTime('now', new DateTimeZone('America/Mexico_City'));
+    
+        // Calcular la diferencia en días
+        $interval = $dateUpdated->diff($actualDate);
+    
+        // Obtener la diferencia en días
+        $dias = $interval->format('%a'); // %a devuelve la diferencia en días
+    
+        if ($dias > 0) {
+            DB::table('configuraciones')->where('variable','EMAIL_ENVIADOS_HOY')->update([
+                'valor'=>'0',
+                'updated_at'=>new DateTime('now',new DateTimeZone('America/Mexico_City'))
+            ]);
+        } 
+    }
+    
 }

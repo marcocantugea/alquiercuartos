@@ -207,6 +207,24 @@ async function PrintTicketInicioAlquiler(id){
     }
 }
 
+async function RePrintTicket(folio){
+    try {
+        var response=await fetch(apiHost+apiPath+"ticket/alquier/reimprimir/"+folio,{
+            method:'get',
+            headers:headersRequest
+        });
+        if(response.ok){
+            const content=await response.json();
+            return content;
+        }else{
+            console.log(response);
+            return;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 async function getAlquilerPorFolio(folio){
     
     try {
@@ -374,6 +392,9 @@ function ConfirmaCorteCaja(){
     $('#modalCorteCaja').modal('show');
 }
 
+function ShowReimprimirTicketModal(){
+    $('#modalReimprimirTicket').modal('show');
+}
 
 async function iniciaAlquiler(){
     $('#modalIniciaAlquiler').modal('hide');
@@ -575,6 +596,28 @@ async function ObtenerCorteCaja(){
     }, 600);
     
 
+}
+
+async function  ReimprimirTicket() {
+
+    $('#modalReimprimirTicket').modal('hide');
+    $('#loadingmodal').modal('show');
+
+    let folioareprimir=$('#folioareimprimirtxt').val();
+    if(folioareprimir=="") return;
+
+    const response=await RePrintTicket(folioareprimir);
+    if(!response){
+        ShowErrorModal('Error al reimprimir ticket','Error al solicitar la imprecion del ticket:80113');
+        setTimeout(() => {
+            $('#loadingmodal').modal('hide');
+        }, 600);
+        return;
+    }
+    
+    setTimeout(() => {
+        $('#loadingmodal').modal('hide');    
+    }, 600);
 }
 
 async function renderCuartos(cuartos,cuartosAlquilados){
