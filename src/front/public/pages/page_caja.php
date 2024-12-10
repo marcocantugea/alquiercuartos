@@ -315,13 +315,13 @@
         loadData();
     })
 
-    $('#corte_fechaInicio').datepicker().val("<?php echo (new DateTime())->format('m/d/Y');?>");
+    $('#corte_fechaInicio').datepicker().val("<?php $timezone= new DateTimeZone('America/Mexico_City'); echo (new DateTime('now',$timezone))->format('m/d/Y');?>");
 
     $('#corte_fechaFin').datepicker({
         minDate: function() {
             return $('#corte_fechaInicio').val();
         }
-    }).val("<?php echo (new DateTime())->format('m/d/Y');?>");
+    }).val("<?php $timezone= new DateTimeZone('America/Mexico_City'); echo (new DateTime('now',$timezone))->format('m/d/Y');?>");
 
     function closeModal(modal) {
         $('#' + modal).modal('hide');
