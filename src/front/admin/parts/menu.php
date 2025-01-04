@@ -21,6 +21,9 @@
       <li class="nav-item">
         <a class="nav-link" href="./?p=hitoriaalquilers">Historial Alquileres</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="./?p=reportepordia">Reporte por Dias</a>
+      </li>
       <!-- <li class="nav-item">
         <a class="nav-link" href="./?p=cancelaciones">Cancelaciones</a>
       </li> -->

@@ -88,4 +88,5 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
     //reportes
     $router->get('api/v1/reportes/mensual/montos','ReportesController@getMontosTotalesPorMes');
+    $router->get('api/v1/reportes/diario/montos','ReportesController@GetReportePorDias');
 });
