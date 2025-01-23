@@ -28,12 +28,17 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         //Scheduler
-        $run= boolval($this->RunScheduler());
+        try{
+            $run= boolval($this->RunScheduler());
         
-        if($run){
-            $setup=$this->GetHours();
-            $schedule->call(new JobsCorteCajaJob())->timezone('America/Mexico_City')->dailyAt($setup);
+            if($run){
+                $setup=$this->GetHours();
+                $schedule->call(new JobsCorteCajaJob())->timezone('America/Mexico_City')->dailyAt($setup);
+            }
+        }catch(\Exception $e){
+            
         }
+       
 
     }
 

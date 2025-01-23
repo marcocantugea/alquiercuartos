@@ -26,7 +26,8 @@ class DatabaseSeeder extends Seeder
             addConfiguracionFinalizarBtn::class,
             AddConfigAutoScheduler::class,
             AddEmailCounterConfig::class,
-            AddBtnConfigPrintAgain::class
+            AddBtnConfigPrintAgain::class,
+            AddSetPassWordForPrintCopies::class
         ]);
     }
 }

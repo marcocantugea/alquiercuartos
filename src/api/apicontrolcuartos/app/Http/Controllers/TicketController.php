@@ -80,7 +80,6 @@ final class TicketController extends Controller
         $token=str_pad((new \DateTimeImmutable($alquiler->fecha_entrada))->format('s'),2,STR_PAD_LEFT).str_pad((new \DateTimeImmutable($alquiler->fecha_entrada))->format('i'),2,STR_PAD_LEFT);
         //str_pad(idate('d',strtotime($alquiler->fecha_entrada)),2,"0",STR_PAD_LEFT).str_pad(idate('H',strtotime($alquiler->fecha_entrada)),2,"0",STR_PAD_LEFT).str_pad(idate('i', strtotime($alquiler->fecha_entrada)),2,"0",STR_PAD_LEFT)
 
-
         $infoTicket=[
             'nombreEmpresa'=>$datosEmpresa['nombreEmpresa'],
             'direccionCalle'=>$datosEmpresa['direccionCalle'],
@@ -105,7 +104,12 @@ final class TicketController extends Controller
         } catch (\Throwable $th) {
             return new Response($this->stdResponse(false,true,"error al imprimir el ticket",$th->getMessage()),500);
         }
-        
+
+        DB::table('cuartosalquiler')->where('publicId',$alquierId)->whereNull('fecha_eliminado')->whereNull('fecha_salida')->update([
+            'ticket_reimpreso'=>true,
+            'updated_at'=>new DateTime('now',new DateTimeZone('America/Mexico_City'))
+        ]);
+
         return new Response($this->stdResponse());
     }
 

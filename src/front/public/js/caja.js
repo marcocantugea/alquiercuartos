@@ -328,6 +328,8 @@ async function loadData(){
     sessionStorage.setItem('config',JSON.stringify(sistemaConfig));
     _systemConfig=sistemaConfig;
     UserRol= (sessionStorage.getItem('role')) ?  JSON.parse(sessionStorage.getItem('role')) : UserRol;
+    //display the password for field for reprint ticket
+    ShowPasswordInputForReprintTicket();
     try {
         setTimeout(async ()=>{
             let cuartos=await getCuartos();
@@ -605,6 +607,19 @@ async function  ReimprimirTicket() {
 
     let folioareprimir=$('#folioareimprimirtxt').val();
     if(folioareprimir=="") return;
+
+    const hasPassword= _systemConfig.filter((element)=> element.publicId=="9584eed2");
+    const password= _systemConfig.filter((element)=> element.publicId=="e3d7dd36");
+
+    if(hasPassword && hasPassword[0].valor=="1"){
+        if(password[0].valor!=$('#passwordReimprimir').val()){
+            ShowErrorModal('Error al reimprimir ticket','Error al solicitar la imprecion del ticket:80112');
+            setTimeout(() => {
+                $('#loadingmodal').modal('hide');
+            }, 600);
+            return;
+        }
+    }
 
     const response=await RePrintTicket(folioareprimir);
     if(!response){
@@ -944,5 +959,15 @@ function handleCobrar(e){
         e.preventDefault(); // Ensure it is only this code that runs
 
         CobrarAlquiler();
+    }
+}
+
+function ShowPasswordInputForReprintTicket(){
+    let functBtnReprintConfig=_systemConfig.filter((element)=> element.publicId=="9584eed2");
+
+    if(functBtnReprintConfig && functBtnReprintConfig[0].valor=="1"){
+        $('#inputPasswordReimprimir').show();
+    }else{
+        $('#inputPasswordReimprimir').hide();
     }
 }
